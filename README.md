@@ -1,2 +1,2 @@
 # Python学習帳
-[[setup.md]]
+[環境構築メモ](notes/setup.md)
