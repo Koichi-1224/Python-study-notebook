@@ -4,7 +4,7 @@
 使い方（各ノートブックの先頭セルで実行）:
     from drill import check, hint, answer, score
 
-    check('1-3', result)   # 答え合わせ
+    check('1-3', result)   # 答え合わせ（正解すると模範解答も表示）
     hint('1-3')            # ヒントを見る
     answer('1-3')          # どうしても分からないとき（解答を表示）
     score()                # この章の進捗を表示
@@ -102,6 +102,12 @@ def check(qid: str, got):
         fire = f"  🔥{_state['streak']}連続" if _state["streak"] >= 2 else ""
         tag = "正解！" if first else "正解（クリア済み）"
         print(f"✅ {qid} {tag}{fire}   第{chapter}章 {done}/{len(ids)}  {_bar(done, len(ids))}")
+        print(f"   値: {got!r}  型: {type(got).__name__}")
+        model = _dec(_BANK[qid]["ans"])
+        lines = model.split("\n")
+        print(f"   📖 模範解答: {lines[0]}")
+        for line in lines[1:]:
+            print(f"             {line}")
         if done == len(ids) and first:
             print(f"🎉 第{chapter}章 コンプリート！ 最長連続正解: {_state['best_streak']}")
     else:
