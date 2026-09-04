@@ -10,7 +10,7 @@
 3. python -m venv .venv
 4. .\.venv\Scripts\Activate.ps1
 5. pip install -r requirements.txt
-※次回起動時は3のみでOK
+※次回起動時は4のみでOK
 ## requirements.txt
 - pip installするものリスト
 - .venvは.gitignoreで除外するためGithubには上がらないため。
