@@ -18,7 +18,7 @@ INTRO = """\
 """
 
 SETUP = """\
-from drill import check, hint, answer, score
+from drill import check, hint, answer, score, weak_list
 print('準備OK！ さっそく Q{ch}-1 から')
 """
 
@@ -44,8 +44,9 @@ def build(filename, title, source, ch, cells):
     }
     for c in cells:
         nb["cells"].append(c)
-    nb["cells"].append(md("---\n## おわり\n\n進捗を確認しよう。"))
+    nb["cells"].append(md("---\n## おわり\n\n進捗と苦手リストを確認しよう。"))
     nb["cells"].append(code(f"score('{ch}')"))
+    nb["cells"].append(code(f"weak_list('{ch}')"))
     (HERE / filename).write_text(json.dumps(nb, ensure_ascii=False, indent=1), encoding="utf-8")
     print("wrote", filename, len(nb["cells"]), "cells")
 

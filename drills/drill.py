@@ -2,12 +2,13 @@
 自動採点ドリル用のモジュール。
 
 使い方（各ノートブックの先頭セルで実行）:
-    from drill import check, hint, answer, score
+    from drill import check, hint, answer, score, weak_list
 
     check('1-3', result)   # 答え合わせ（正解すると模範解答も表示）
     hint('1-3')            # ヒントを見る
     answer('1-3')          # どうしても分からないとき（解答を表示）
-    score()                # この章の進捗を表示
+    score()                # この章の進捗＋苦手リストを表示
+    weak_list()             # 苦手リストだけを表示（復習用）
 
 解答はこのファイルの中に base64 で入れてある（うっかり目に入らないようにしてあるだけ）。
 """
@@ -138,6 +139,16 @@ def answer(qid: str):
     print(f"📖 {qid} 解答例:\n{_dec(_BANK[qid]['ans'])}")
 
 
+_WEAK_THRESHOLD = 2  # この回数以上つまずいたら「苦手」扱い
+
+
+def _weak_ids():
+    """つまずいた回数（tries）が多い順の問題IDリストを返す。"""
+    weak = [(qid, n) for qid, n in _state["tries"].items() if n >= _WEAK_THRESHOLD]
+    weak.sort(key=lambda x: (-x[1], x[0]))
+    return weak
+
+
 def score(chapter: str | None = None):
     """進捗表示。chapter を省略すると全章を表示。"""
     chapters = [chapter] if chapter else sorted({q.split('-')[0] for q in _BANK}, key=int)
@@ -150,7 +161,31 @@ def score(chapter: str | None = None):
         if rest and chapter:
             print(f"   未クリア: {', '.join(rest)}")
     print(f"最長連続正解: {_state['best_streak']}")
+
+    weak = _weak_ids()
+    if chapter:
+        weak = [(qid, n) for qid, n in weak if qid.split("-")[0] == chapter]
+    if weak:
+        print("-" * 44)
+        print(f"🧠 苦手リスト（{_WEAK_THRESHOLD}回以上つまずいた問題。復習はここから）")
+        for qid, n in weak:
+            mark = "✅" if qid in _state["solved"] else "❌"
+            print(f"   {mark} {qid}  {n}回")
     print("=" * 44)
+
+
+def weak_list(chapter: str | None = None):
+    """苦手リストだけを表示する（score() の中でも一緒に出る）。"""
+    weak = _weak_ids()
+    if chapter:
+        weak = [(qid, n) for qid, n in weak if qid.split("-")[0] == chapter]
+    if not weak:
+        print(f"🧠 苦手リストは空だよ（{_WEAK_THRESHOLD}回以上つまずいた問題がまだ無い）")
+        return
+    print(f"🧠 苦手リスト（{_WEAK_THRESHOLD}回以上つまずいた問題。復習はここから）")
+    for qid, n in weak:
+        mark = "✅ クリア済み" if qid in _state["solved"] else "❌ 未クリア"
+        print(f"   {qid}  {n}回  {mark}")
 
 
 # ---------------------------------------------------------------
