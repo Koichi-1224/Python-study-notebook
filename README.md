@@ -7,6 +7,10 @@
 - [条件分岐と繰り返し](basic/if_and_for.ipynb)
 - [関数やライブラリ、クラス](basic/function.ipynb)
 
+## データサイエンス
+- [データサイエンス](data-science/data-science-basic.md)
+- [データサイエンス実践](data-science/data-science.ipynb)
+
 ## Claudeエージェント
 - Claude CodeのCowork使用
 - フォルダをコンテキストに入れているため見てもらったうえで質問することができる
